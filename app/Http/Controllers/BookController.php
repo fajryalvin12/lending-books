@@ -96,7 +96,7 @@ class BookController extends Controller
     }
 
     // delete book
-    public function destroy() {
+    public function destroy($bookcode) {
          // select the book 
         $selectedBook = Book::where('bookcode', $bookcode)->first();
 
