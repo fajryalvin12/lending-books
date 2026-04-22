@@ -15,7 +15,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', fn() => view('admin.dashboard'));
-        Route::resource('/books', BookController::class);
+
+        // Frontend
+        Route::get('/books', function () {
+            return view('admin.books.index');
+        });
+
+        // Backend
+        Route::get('/books/data', [BookController::class, 'data']);
     });
 
     Route::prefix('member')->middleware('role:member')->group(function () {

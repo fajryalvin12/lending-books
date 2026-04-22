@@ -116,4 +116,12 @@ class BookController extends Controller
             'message' => 'Book deleted successfully',
         ]);
     }
+
+    public function data () {
+        $books = Book::select(['bookcode', 'title', 'author', 'year', 'stock']);
+
+        return response()->json([
+            'data' => $books->get()
+        ]);
+    }
 }
