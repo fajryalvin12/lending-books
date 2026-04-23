@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BorrowingController;
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin']);
@@ -27,6 +28,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('member')->middleware('role:member')->group(function () {
         Route::get('/dashboard', fn() => view('member.dashboard'));
+
+        // Frontend 
+        Route::get('/borrowings', function() {
+            return view('member.borrowings.index');
+        });
     });
 
 });

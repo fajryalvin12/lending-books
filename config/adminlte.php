@@ -332,11 +332,15 @@ return [
             'url'  => 'admin/dashboard',
             'icon' => 'fas fa-home',
         ],
-
         [
             'text' => 'Books',
             'url'  => 'admin/books',
             'icon' => 'fas fa-book',
+        ],
+        [
+            'text' => 'Borrowings',
+            'url'  => 'member/borrowings',
+            'icon' => 'fas fa-handshake',
         ],
         ['header' => 'account_settings'],
         [

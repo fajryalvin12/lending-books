@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BorrowingController;
 
 // users 
 Route::prefix('users')->group(function () {
@@ -17,6 +18,11 @@ Route::prefix('books')->group(function () {
     Route::post('/', [BookController::class, 'store']);
     Route::put('{bookcode}', [BookController::class, 'update']);
     Route::delete('{bookcode}', [BookController::class, 'destroy']);
+});
+
+// borrowings
+Route::prefix('borrowings')->group(function () {
+    Route::post('/', [BorrowingController::class, 'borrowed']);
 });
 
 Route::get('/test', function () {

@@ -72,153 +72,154 @@
             </div>
         </div>
     </div>
+@stop
 
 @section('css')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 @stop
 
 @section('js')
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-<script>
-    let table;
-    let mode = ""
-    let selectedBookCode = ""
+    <script>
+        let table;
+        let mode = ""
+        let selectedBookCode = ""
 
-    // retrieve the books API data
-    $(document).ready(function() {
-        console.log("mode : ", mode)
-        table = $('#booksTable').DataTable({
-            ajax: '/admin/books/data',
-            columns: [
-                { data: 'bookcode' },
-                { data: 'title' },
-                { data: 'author' },
-                { data: 'year' },
-                { data: 'stock' },
-                {
-                    data: null,
-                    render: function(data) {
-                        
-                        return `
-                            <button data-code=${data.bookcode} class="btn btn-sm btn-warning btn-edit">Edit</button>
-                            <button data-code=${data.bookcode} class="btn btn-sm btn-danger btn-delete">Delete</button>
-                        `;
+        // retrieve the books API data
+        $(document).ready(function() {
+            console.log("mode : ", mode)
+            table = $('#booksTable').DataTable({
+                ajax: '/admin/books/data',
+                columns: [
+                    { data: 'bookcode' },
+                    { data: 'title' },
+                    { data: 'author' },
+                    { data: 'year' },
+                    { data: 'stock' },
+                    {
+                        data: null,
+                        render: function(data) {
+                            
+                            return `
+                                <button data-code=${data.bookcode} class="btn btn-sm btn-warning btn-edit">Edit</button>
+                                <button data-code=${data.bookcode} class="btn btn-sm btn-danger btn-delete">Delete</button>
+                            `;
+                        }
                     }
-                }
-            ]
+                ]
+            });
+
         });
 
-    });
-
-    // handling add new books 
-    $('#addBook').click(function() {
-        $('.modal').show()
-        $('.modal-title').text("Add New Book")
-        mode = "add"
-    })
-    $('#close-modal').click(function() {
-        $('.modal').hide()
-    })
-
-    // submit data new book 
-    $('#submit-data').click(function () {
-        let objData = {
-            bookcode: document.getElementById('bookcode').value,
-            title: document.getElementById('title').value,
-            author: document.getElementById('author').value,
-            year: document.getElementById('year').value,
-            stock: document.getElementById('stock').value
-        }
-
-        if (mode === 'add') {
-            $.ajax({
-                type: 'POST',
-                dataType: "json",
-                data: objData,
-                url: "http://127.0.0.1:8000/api/books",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(result) {
-                    alert(result.message)
-                    $('.modal').hide()
-                    table.ajax.reload()
-                }
-            })
-        } else if (mode === 'edit') {
-             $.ajax({
-                type: 'PUT',
-                dataType: "json",
-                data: objData,
-                url: `http://127.0.0.1:8000/api/books/${selectedBookCode}`,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(result) {
-                    alert(result.message)
-                    $('.modal').hide()
-                    table.ajax.reload()
-                }
-            })
-        }
-    })
-
-    // edit / delete existing data book
-    $('#booksTable').on('click', "button[data-code]", function(event) {
-        event.preventDefault();
-
-        selectedBookCode = $(this).attr("data-code")
-        const edit = $(this).hasClass("btn-edit")
-        const remove = $(this).hasClass("btn-delete")
-        mode = "edit"
-        console.log("mode at edit scope : ", mode)
-        console.log("selectedcode at edit scope : ", selectedBookCode)
-
-        // edit section
-        if (edit) {
-            console.log("edit button clicked")
-            
-            // retrieve book data by book-code 
-            $.ajax({
-                type: 'GET',
-                dataType: 'json',
-                url: `http://127.0.0.1:8000/api/books/${selectedBookCode}`,
-                success: function(result) {
-                    const data = result.data
-                    console.log("selected book : ", data)
-
-                    for (const key in data) {
-                        $(`#${key}`).val(data[key])
-                    }
-                    
-                }
-            })
-
-            // show the modal 
+        // handling add new books 
+        $('#addBook').click(function() {
             $('.modal').show()
-            $('.modal-title').text("Edit Selected Book")
+            $('.modal-title').text("Add New Book")
+            mode = "add"
+        })
+        $('#close-modal').click(function() {
+            $('.modal').hide()
+        })
 
-            
-        } else if (remove) {
-            console.log("remove button clicked")
+        // submit data new book 
+        $('#submit-data').click(function () {
+            let objData = {
+                bookcode: document.getElementById('bookcode').value,
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                year: document.getElementById('year').value,
+                stock: document.getElementById('stock').value
+            }
+
+            if (mode === 'add') {
+                $.ajax({
+                    type: 'POST',
+                    dataType: "json",
+                    data: objData,
+                    url: "http://127.0.0.1:8000/api/books",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(result) {
+                        alert(result.message)
+                        $('.modal').hide()
+                        table.ajax.reload()
+                    }
+                })
+            } else if (mode === 'edit') {
+                $.ajax({
+                    type: 'PUT',
+                    dataType: "json",
+                    data: objData,
+                    url: `http://127.0.0.1:8000/api/books/${selectedBookCode}`,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(result) {
+                        alert(result.message)
+                        $('.modal').hide()
+                        table.ajax.reload()
+                    }
+                })
+            }
+        })
+
+        // edit / delete existing data book
+        $('#booksTable').on('click', "button[data-code]", function(event) {
+            event.preventDefault();
+
             selectedBookCode = $(this).attr("data-code")
-            console.log("selectedcode at delete scope : ", selectedBookCode)
+            const edit = $(this).hasClass("btn-edit")
+            const remove = $(this).hasClass("btn-delete")
+            mode = "edit"
+            console.log("mode at edit scope : ", mode)
+            console.log("selectedcode at edit scope : ", selectedBookCode)
 
-            // retrieve book data by book-code 
-            $.ajax({
-                type: 'DELETE',
-                dataType: 'json',
-                url: `http://127.0.0.1:8000/api/books/${selectedBookCode}`,
-                success: function(result) {
-                    alert(result.message)
-                    $('.modal').hide()
-                    table.ajax.reload()
-                }
-            })
-        }
-    })
-    
-</script>
+            // edit section
+            if (edit) {
+                console.log("edit button clicked")
+                
+                // retrieve book data by book-code 
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: `http://127.0.0.1:8000/api/books/${selectedBookCode}`,
+                    success: function(result) {
+                        const data = result.data
+                        console.log("selected book : ", data)
+
+                        for (const key in data) {
+                            $(`#${key}`).val(data[key])
+                        }
+                        
+                    }
+                })
+
+                // show the modal 
+                $('.modal').show()
+                $('.modal-title').text("Edit Selected Book")
+
+                
+            } else if (remove) {
+                console.log("remove button clicked")
+                selectedBookCode = $(this).attr("data-code")
+                console.log("selectedcode at delete scope : ", selectedBookCode)
+
+                // retrieve book data by book-code 
+                $.ajax({
+                    type: 'DELETE',
+                    dataType: 'json',
+                    url: `http://127.0.0.1:8000/api/books/${selectedBookCode}`,
+                    success: function(result) {
+                        alert(result.message)
+                        $('.modal').hide()
+                        table.ajax.reload()
+                    }
+                })
+            }
+        })
+        
+    </script>
 @stop
 

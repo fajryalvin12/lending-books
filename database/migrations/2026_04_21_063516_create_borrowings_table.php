@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('borrowings', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
-            $table->bigInteger('book_id');
-            $table->timestamp('borrow_date', precision: 0);
-            $table->timestamp('return_date', precision: 0)->nullable();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('book_id')->constrained();
+            $table->timestamp('borrow_date');
+            $table->timestamp('return_date')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'returned']);
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('book_id')->references('id')->on('books');
         });
     }
 
